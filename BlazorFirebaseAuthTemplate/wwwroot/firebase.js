@@ -19,23 +19,34 @@ window.FirebaseLogin = (instance) => {
 
     var provider = new firebase.auth.GoogleAuthProvider();
  
-    if (localStorage.token){        
+    if (localStorage.token) {
+        console.log(localStorage.token);
         instance.invokeMethod('LoginCallback', localStorage.email, localStorage.display, localStorage.token);
     }
     else {
         firebase.auth().signInWithPopup(provider).then(function (result) {
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = result.credential.accessToken;
+            //console.log(token);
             // The signed-in user info.
             var user = result.user;
             // ...
-            console.log(user);
-            localStorage.display = user.displayName;
-            localStorage.email = user.email;
-            localStorage.token = token;
+            console.log(user);           
 
 
-            instance.invokeMethod('LoginCallback', user.email, user.displayName, token);                                    
+            user.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+                
+                localStorage.display = user.displayName;
+                localStorage.email = user.email;
+                localStorage.token = idToken;
+                instance.invokeMethod('LoginCallback', user.email, user.displayName, idToken);   
+
+            }).catch(function (error) {
+                console.log(error);
+            });
+
+
+                                             
 
         }).catch(function (error) {
             // Handle Errors here.
