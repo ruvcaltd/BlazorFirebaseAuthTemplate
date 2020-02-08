@@ -1,0 +1,10 @@
+﻿@page "/"
+@inherits IndexBase;
+
+<h1>@User</h1>
+
+Logged In as @Email
+
+<botton class="btn btn-info" @onclick="@(()=>Login())">Login</botton>
+
+<botton class="btn btn-light" @onclick="@(()=>Logout())">Logout</botton>
